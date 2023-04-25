@@ -1,0 +1,34 @@
+{
+    "name": "slick-pay-algeria/slickpay-laravel",
+    "description": "Laravel package for Slick-Pay API implementation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Slick-Pay",
+            "email": "contact@slick-pay.com"
+        },
+        {
+            "name": "Azimut BS",
+            "email": "contact@azimutbs.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SlickPay\\": "src/",
+            "SlickPay\\User\\": "src/User",
+            "SlickPay\\Merchant\\": "src/Merchant"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SlickPay\\ApiServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false
+}
