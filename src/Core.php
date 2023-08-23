@@ -321,7 +321,7 @@ class Core
      */
     public static function url(string $url): string
     {
-        $domain_name = config('transfer.sandbox', true)
+        $domain_name = config('slickpay.sandbox', true)
             ? "devapi.slick-pay.com"
             : "prodapi.slick-pay.com";
 
