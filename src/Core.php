@@ -97,7 +97,7 @@ class Core
         } catch (\Exception $e) {
 
             return [
-                'status' => $status,
+                'status' => 500,
                 'data'   => null,
                 'errors' => [
                     $e->getMessage()
