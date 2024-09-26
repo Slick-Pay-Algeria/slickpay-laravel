@@ -20,7 +20,8 @@
         }
     },
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "illuminate/support": "^8.0"
     },
     "extra": {
         "laravel": {
@@ -30,5 +31,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": false
+    "prefer-stable": true
 }
