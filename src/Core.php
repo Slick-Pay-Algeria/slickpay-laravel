@@ -67,46 +67,44 @@ class Core
      */
     public static function store(string $url, array $data): array
     {
-        $public_key = config('slickpay.public_key', null);
+    $public_key = config('slickpay.public_key', null);
 
-        $error = self::validate();
+    $error = self::validate();
 
-        if (!empty($error)) return $error;
+    if (!empty($error)) return $error;
 
-        try {
+    try {
+        $cURL = curl_init();
 
-            $cURL = curl_init();
+        curl_setopt($cURL, CURLOPT_URL, self::url($url));
+        curl_setopt($cURL, CURLOPT_POST, true);
+        curl_setopt($cURL, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($cURL, CURLOPT_HTTPHEADER, [
+            "Accept: application/json",
+            "Content-Type: application/json",
+            "Authorization: Bearer {$public_key}",
+        ]);
+        curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($cURL, CURLOPT_TIMEOUT, 20);
 
-            curl_setopt($cURL, CURLOPT_URL, self::url($url));
-            curl_setopt($cURL, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
-                "Accept: application/json",
-                "Authorization: Bearer {$public_key}",
-            ));
-            curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT, 3);
-            curl_setopt($cURL, CURLOPT_TIMEOUT, 20);
+        $response = curl_exec($cURL);
+        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
+        $errors = curl_error($cURL);
 
-            $response = curl_exec($cURL);
-            $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
-            $errors = curl_error($cURL);
-
-            curl_close($cURL);
-
-        } catch (\Exception $e) {
-
-            return [
-                'status' => 500,
-                'data'   => null,
-                'errors' => [
-                    $e->getMessage()
-                ],
-            ];
-        }
-
-        return self::response($status, $response, $errors);
+        curl_close($cURL);
+    } catch (\Exception $e) {
+        return [
+            'status' => $status ?? 500,
+            'data'   => null,
+            'errors' => [$e->getMessage()],
+        ];
     }
+
+    return self::response($status, $response, $errors);
+}
+
 
     /**
      * Get the specified resource data.
@@ -233,9 +231,11 @@ class Core
             $cURL = curl_init();
 
             curl_setopt($cURL, CURLOPT_URL, self::url("{$url}/{$id}"));
-            curl_setopt($cURL, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($cURL, CURLOPT_POSTFIELDS, json_encode($data));
             curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
                 "Accept: application/json",
+                'Content-Type: application/json',
+
                 "Authorization: Bearer {$public_key}",
             ));
             curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
